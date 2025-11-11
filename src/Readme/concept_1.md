@@ -8,6 +8,8 @@
 2. [Components - Creating a Reusable Player Component](#22-understanding-Default-Security-Configuration)
 3. [useState – Managing Edit Mode](#23-Customizing-Spring-Security-Rules)
 4. [Toggle, Pre-populate & Button Caption](#24-Disabling-formLogin()-and-httpBasic())
+5. [State Updates: Functional Updater Form of `setState`]()
+6. [Two-Way Binding]()
 
 ---
 
@@ -180,3 +182,171 @@ export default function Player({ name, symbol }) {
   );
 }
 ```
+
+---
+
+# State Updates: Functional Updater Form of `setState`
+
+## Problem with Old Approach
+
+When updating state using direct inversion like `setIsEditing(!isEditing)`, both updates in the same render cycle rely on the **old** state value because React **schedules updates asynchronously**.  
+Thus, multiple updates can end up using stale data, leading to unexpected behavior.
+
+Example:
+
+```jsx
+setIsEditing(!isEditing);
+setIsEditing(!isEditing);
+```
+
+Both read the same old `isEditing` value — resulting in no toggle effect.
+
+### Why This Approach
+
+React recommends using the **functional updater form** (`setState(prev => newValue)`) whenever the new state depends on the previous one.  
+This ensures React passes the **latest state value** at the time the update is applied, even if multiple updates are batched.
+
+```jsx
+ setIsEditing(prevEditing => !prevEditing);
+```
+
+## Concepts Learned
+
+- React state updates are **not immediate**; they’re **scheduled** and can be batched.
+
+- Use the **functional updater** when the new value depends on the previous one.
+
+- Avoid referencing the current state variable directly when chaining updates.
+
+- The updater function receives the **most recent** state from React.
+
+```jsx
+import { useState } from "react";
+
+export default function Player({ name, symbol }) {
+  const [isEditing, setIsEditing] = useState(false);
+
+  function handleEditClick() {
+    // ✅ Best practice: functional updater for state based on previous value
+    setIsEditing(prevEditing => !prevEditing);
+  }
+
+  const btnCaption = isEditing ? "Save" : "Edit";
+
+  let playerName = <span className="player-name">{name}</span>;
+  if (isEditing) {
+    playerName = <input type="text" required value={name}
+```
+
+---
+
+# React `useState` – Two-Way Binding (Editable Player Name)
+
+## 🎯 Problem
+
+Currently, the player name displayed in the input field **cannot be edited**.  
+This happens because the `value` prop of the `<input>` element **controls** its content.  
+When you set a fixed value via the `value` prop, React treats that input as **controlled**,  
+and any manual edits by the user get **overwritten** by that value.
+
+#### 🧩 Attempt #1 – Using `defaultValue`
+
+One way to make the input editable is to use the `defaultValue` prop:
+
+```jsx
+<input type="text" defaultValue={name} />
+```
+
+- `defaultValue` only sets the **initial** value.
+
+- The user can now type into the input.
+
+- ❌ However, clicking **Save** won’t persist the updated name — because we’re not managing the new value in state.
+
+---
+
+#### 💡 Correct Approach – Managing Editable State
+
+To properly manage the editable name, we must:
+
+1. **Create a second piece of state** for the player name.
+
+2. Initialize it with the `initialName` prop.
+
+3. Use an `onChange` handler to capture user input.
+
+4. Update state as the user types.
+
+5. Bind that state back to the input field (two-way binding).
+
+---
+
+#### ⚙️ Implementation
+
+```jsx
+import { useState } from "react";
+
+export default function Player({ initialName, symbol }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [playerName, setPlayerName] = useState(initialName);
+
+  function handleEditClick() {
+    setIsEditing((editing) => !editing);
+  }
+
+  function handleChange(event) {
+    // event.target.value gives the latest user input
+    setPlayerName(event.target.value);
+  }
+
+  let editablePlayerName = isEditing ? (
+    <input
+      type="text"
+      required
+      value={playerName}
+      onChange={handleChange} // 👈 listen to input changes
+    />
+  ) : (
+    <span className="player-name">{playerName}</span>
+  );
+
+  return (
+    <span className="player">
+      {editablePlayerName}
+      <span className="player-symbol">{symbol}</span>
+      <button onClick={handleEditClick}>
+        {isEditing ? "Save" : "Edit"}
+      </button>
+    </span>
+  );
+}
+```
+
+#### 🧠 How It Works
+
+- `onChange` fires every time the user types or pastes something.
+
+- React passes an **event object** with a `target` (the input element).
+
+- `event.target.value` gives the **latest typed value**.
+
+- We call `setPlayerName()` to store it in state.
+
+- Since `value={playerName}` binds the state back to the input,  
+  React re-renders and displays the updated value immediately.
+
+---
+
+#### 🔁 Two-Way Binding
+
+This mechanism — where:
+
+- The UI **reflects state** (`value={playerName}`)
+
+- The state **updates based on user input** (`onChange={handleChange}`)
+
+is known as **two-way binding**.
+
+It ensures that your component and the input field stay perfectly in sync.
+
+---

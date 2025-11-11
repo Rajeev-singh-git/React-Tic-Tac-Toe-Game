@@ -6,8 +6,6 @@
 
 `npm install`
 
-> *(Note: it’s `npm install`, not `npm run install`)*
-
 ### 2. Start the Development Server
 
 `npm run dev`
