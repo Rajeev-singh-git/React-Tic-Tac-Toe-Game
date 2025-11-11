@@ -10,6 +10,7 @@
 4. [Toggle, Pre-populate & Button Caption](#24-Disabling-formLogin()-and-httpBasic())
 5. [State Updates: Functional Updater Form of `setState`]()
 6. [Two-Way Binding]()
+7. [map()` – Dynamically Rendering]()
 
 ---
 
@@ -348,5 +349,132 @@ This mechanism — where:
 is known as **two-way binding**.
 
 It ensures that your component and the input field stay perfectly in sync.
+
+---
+
+# `map()` – Dynamically Rendering a Tic-Tac-Toe Board
+
+## 🎯 Goal
+
+Render a **3×3 Tic-Tac-Toe grid** dynamically instead of hardcoding buttons.  
+Each cell should be represented by a button, which will later be updated with the player’s symbol (`X` or `O`).
+
+---
+
+### ⚠️ Problem with Hardcoding
+
+Hardcoding the grid (9 buttons manually) is not scalable or reactive.
+
+```jsx
+<ol id="game-board">
+  <li><button></button><button></button><button></button></li>
+  <li><button></button><button></button><button></button></li>
+  <li><button></button><button></button><button></button></li>
+</ol>
+```
+
+❌ Drawbacks:
+
+- Tedious to manage.
+
+- Doesn’t support dynamic updates when the board changes.
+
+- Duplicates layout logic instead of generating it programmatically.
+
+---
+
+### 💡 Dynamic Rendering with `map()`
+
+Use **nested arrays** to represent the grid state and `Array.map()` to render it.
+
+##### Step 1 – Define Initial Board State
+
+```jsx
+const initialGameBoard = [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null],
+];
+```
+
+- The outer array = rows
+
+- The inner arrays = columns
+
+- Each cell can hold `null`, `"X"`, or `"O"`
+
+---
+
+### Step 2 – Build the `GameBoard` Component
+
+```jsx
+import React from "react";
+
+const initialGameBoard = [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null],
+];
+
+export default function GameBoard() {
+  return (
+    <ol id="game-board">
+      {initialGameBoard.map((row, rowIndex) => (
+        <li key={rowIndex}>
+          <ol>
+            {row.map((playerSymbol, colIndex) => (
+              <li key={colIndex}>
+                <button>{playerSymbol}</button>
+              </li>
+            ))}
+          </ol>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+```
+
+---
+
+**Step 3 – Use It in `App.jsx`**
+
+```jsx
+import GameBoard from "./components/GameBoard";
+
+export default function App() {
+  return (
+    <main>
+      <GameBoard />
+    </main>
+  );
+}
+
+```
+
+## 🧠 Key React Concepts
+
+### 🪄 1. Nested `map()` for Multidimensional Data
+
+Each row is an array of cells, so you need **two `map()` calls**:
+
+- Outer `map()` → rows
+
+- Inner `map()` → columns (buttons)
+
+### 🔑 2. Keys for List Items
+
+Each dynamically rendered element needs a unique `key`.
+
+- Prefer unique identifiers from data when available.
+
+- Using array **index** (`rowIndex`, `colIndex`) is acceptable here  
+  because the grid rows never reorder.
+
+### 💭 3. Dynamic Rendering
+
+The grid now depends entirely on the data structure, not hardcoded HTML.  
+When the board updates later (after a click), React can re-render it automatically.
 
 ---
