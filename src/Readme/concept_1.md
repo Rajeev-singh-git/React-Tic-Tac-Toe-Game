@@ -7,14 +7,15 @@
 1. [Not all content must go into components](#21-creating-backend-rest-apis-for-easybank)
 2. [Components - Creating a Reusable Player Component](#22-understanding-Default-Security-Configuration)
 3. [useState – Managing Edit Mode](#23-Customizing-Spring-Security-Rules)
-4. [Toggle, Pre-populate & Button Caption](#24-Disabling-formLogin()-and-httpBasic())
-5. [State Updates: Functional Updater Form of `setState`]()
-6. [Two-Way Binding]()
-7. [map()` – Dynamically Rendering]()
+4. [Component Instance Isolation]()
+5. [Toggle, Pre-populate & Button Caption](#24-Disabling-formLogin()-and-httpBasic())
+6. [State Updates: Functional Updater Form of `setState`]()
+7. [Two-Way Binding]()
+8. [map() – Dynamically Rendering]()
 
 ---
 
-# Static Markup in index.html
+# 1. Static Markup in index.html
 
 ### Concepts Learned
 
@@ -36,7 +37,7 @@ index.html
 
 ---
 
-# Components – Creating a Reusable Player Component
+# 2. Components – Creating a Reusable Player Component
 
 ## Concepts Learned
 
@@ -67,7 +68,7 @@ export default function Player({ name, symbol }) {
 
 ---
 
-# useState – Managing Edit Mode in a Component
+# 3. useState – Managing Edit Mode in a Component
 
 ## Concepts Learned
 
@@ -111,7 +112,7 @@ export default function Player({ name, symbol }) {
 
 ---
 
-# Component Instance Isolation
+# 4. Component Instance Isolation
 
 ## Concept
 
@@ -143,7 +144,7 @@ If you ever see one component’s state change affecting another, it’s usually
 
 ---
 
-# Player Edit Mode: Toggle, Pre-populate & Button Caption
+# 5. Player Edit Mode: Toggle, Pre-populate & Button Caption
 
 ## Concepts Learned
 
@@ -186,7 +187,7 @@ export default function Player({ name, symbol }) {
 
 ---
 
-# State Updates: Functional Updater Form of `setState`
+# 6. State Updates: Functional Updater Form of `setState`
 
 ## Problem with Old Approach
 
@@ -241,7 +242,7 @@ export default function Player({ name, symbol }) {
 
 ---
 
-# React `useState` – Two-Way Binding (Editable Player Name)
+# 7. React `useState` – Two-Way Binding (Editable Player Name)
 
 ## 🎯 Problem
 
@@ -352,7 +353,7 @@ It ensures that your component and the input field stay perfectly in sync.
 
 ---
 
-# `map()` – Dynamically Rendering a Tic-Tac-Toe Board
+# 8. `map()` – Dynamically Rendering a Tic-Tac-Toe Board
 
 ## 🎯 Goal
 
@@ -433,7 +434,6 @@ export default function GameBoard() {
     </ol>
   );
 }
-
 ```
 
 ---
@@ -450,7 +450,6 @@ export default function App() {
     </main>
   );
 }
-
 ```
 
 ## 🧠 Key React Concepts
